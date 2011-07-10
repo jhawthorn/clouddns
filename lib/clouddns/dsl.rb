@@ -38,8 +38,8 @@ module Clouddns
     def NS *args
       add_record 'NS', *args
     end
-    def TXT *args
-      add_record 'TXT', *args
+    def TXT name, value, options={}
+      add_record 'TXT', name, "\"#{value}\"", options
     end
 
     def add_record type, name, value, options={}
