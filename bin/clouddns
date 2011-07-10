@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'optparse'
+require 'clouddns'
+
+options = {
+  :fog => {},
+  :force => false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [OPTIONS] [ACTION] FILES"
+
+  opts.on('-p', '--provider provider', "Override DNS provider (AWS, Zerigo, etc)") do |provider|
+    options[:fog][:provider] = provider
+  end
+
+  opts.on('-f', '--force', 'Assume yes to all questions') do
+    options[:force] = true
+  end
+
+  opts.on('-v', '--version') do
+    puts "clouddns v#{Clouddns::VERSION}"
+    exit(0)
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+action = ARGV.slice!(0)
+files = ARGV
+
+raise "No action specified" unless action
+raise "No files specified" if files.empty?
+
+zones = files.map do |file|
+  Clouddns::DSL.parse_file(file).zones
+end.flatten
+
+zones.each do |zone|
+  Clouddns::Actions.by_name(action).run(zone, options)
+end
+
