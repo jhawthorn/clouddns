@@ -4,9 +4,9 @@ require File.expand_path('../lib/clouddns/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["John Hawthorn"]
   gem.email         = ["john.hawthorn@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ''
+  gem.description   = %q{A DSL for managing DNS for cloud DNS services}
+  gem.summary       = %q{A DSL and tools for managing DNS for any of the DNS services supported by fog.  Currently, this is Amazon Route 53, bluebox, DNSimple, DNS Made Easy, Linode DNS, Slicehost DNS and Zerigo DNS }
+  gem.homepage      = 'https://github.com/jhawthorn/clouddns'
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
