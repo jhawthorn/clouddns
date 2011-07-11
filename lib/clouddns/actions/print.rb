@@ -1,20 +1,23 @@
+require 'clouddns/actions/print_record'
+
 module Clouddns
   module Actions
     class Print < GenericAction
+      include PrintRecord
+
       def run
+        print_all
+      end
+
+      protected
+      def print_all
         puts "Zone '#{@zone.name}'"
-        namelen = @zone.records.map{ |x| x.name.length }.max
+        namelength = @zone.records.map{ |x| x.name.length }.max
         @zone.records.each do |record|
-          record.value.each_with_index do |value, i|
-            if i.zero?
-              args = [record.type, record.ttl, record.name, value]
-            else
-              args = ['', '', '', value]
-            end
-            puts "%5s %5s %#{namelen}s %s" % args
-          end
+          print_record record, namelength
         end
       end
     end
   end
 end
+

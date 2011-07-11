@@ -6,6 +6,7 @@ module Clouddns
 
     def initialize type, name, value, options = {}
       value = [value] unless value.is_a? Array
+      options[:ttl] ||= 600
 
       self.attributes = options.merge({
         :type => type,
