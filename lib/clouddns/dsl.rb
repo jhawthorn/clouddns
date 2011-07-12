@@ -1,20 +1,16 @@
 module Clouddns
   class DSL
     attr_reader :zones
+    attr_reader :fog_options
 
     # This need not be too strict. Only exists to help catch typos.
     DNS_REGEX = /\A.*\..*\.\z/
 
-    def scope options={}
-      oldscope = @scope
-      @scope = @scope.merge(options)
-      yield
-      @scope = oldscope
-    end
-
     def initialize
       @zones = []
-      @scope = {}
+      @zone = nil
+      @defaults = {}
+      @fog_options = {}
     end
 
     def self.parse_string string
@@ -25,6 +21,8 @@ module Clouddns
     def self.parse_file filename
       parse_string open(filename).read
     end
+
+    protected
 
     def A *args
       add_record 'A', *args
@@ -43,20 +41,35 @@ module Clouddns
     end
 
     def add_record type, name, value, options={}
-      zone = @scope[:zone]
+      raise "records must be added inside a zone" unless @zone
+      raise "record's dns name must end with the current zone" unless name.end_with? @zone.name
 
-      raise "records must be added inside a zone" unless zone
-      raise "record's dns name must end with the current zone" unless name.end_with? zone.name
-
-      @scope[:zone].records << Record.new(type, name, value, options)
+      @zone.records << Record.new(type, name, value, options)
     end
 
-    def zone name, &block
-      raise "zone must be at the top level" if @scope[:zone]
+    def zone name
+      raise "zones cannot be nested" if @zone
 
-      zone = Zone.new(name)
-      @zones << zone
-      scope :zone => zone, &block
+      @zone = Zone.new(name)
+      @zones << @zone
+      yield
+      @zone = nil
+    end
+
+    def defaults options={}
+      if block_given?
+        old = @defaults
+        @defaults = @defaults.merge(options)
+        yield
+        @defaults = old
+      else
+        raise "defaults must either take a block or be before any zone declarations" unless @zones.empty?
+        @defaults = @defaults.merge(options)
+      end
+    end
+
+    def provider name, options={}
+      @fog_options = options.merge({:provider => name})
     end
   end
 end

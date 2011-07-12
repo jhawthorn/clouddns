@@ -37,11 +37,17 @@ files = ARGV
 raise "No action specified" unless action
 raise "No files specified" if files.empty?
 
-zones = files.map do |file|
-  Clouddns::DSL.parse_file(file).zones
-end.flatten
+action = Clouddns::Actions.by_name(action)
 
-zones.each do |zone|
-  Clouddns::Actions.by_name(action).run(zone, options)
+zones = files.map do |file|
+  dsl = Clouddns::DSL.parse_file(file)
+
+  dsloptions = {:fog => dsl.fog_options}.merge(options) do |key, oldval, newval|
+    oldval.merge(newval)
+  end
+
+  dsl.zones.each do |zone|
+    action.run(zone, dsloptions)
+  end
 end
 
