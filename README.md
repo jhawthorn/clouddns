@@ -37,16 +37,16 @@ Example configuration
 
     defaults :ttl => 600
 
-    zone 'example.com.' do
-    	A 'example.com.', '1.2.3.4'
-    	CNAME 'www.example.com.', 'example.com.'
+    zone 'example.com' do
+      A 'example.com', '1.2.3.4'
+      CNAME 'www.example.com', 'example.com.'
 
-    	A 'mail.example.com.', '4.3.2.1'
-    	MX 'www.example.com.', '10 mail.exmaple.com.', :ttl => 300
+      A 'mail.example.com', '4.3.2.1'
+      MX 'www.example.com', '10 mail.example.com.', :ttl => 300
     end
-    
-    zone 'example.net.' do
-    	A 'www.example.net.', '1.2.3.4'
+
+    zone 'example.net' do
+      A 'www.example.net', '1.2.3.4'
     end
 
 Zone
