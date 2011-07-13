@@ -19,5 +19,15 @@ class DslTest < Test::Unit::TestCase
     assert_equal 'www.example.com.', record.name
     assert_equal ['1.2.3.4'], record.value
   end
+  def test_trailing_dot_is_implied
+    dsl = Clouddns::DSL.parse_string <<-EOL
+      zone "example.com" do
+        A 'www.example.com', '1.2.3.4'
+      end
+    EOL
+
+    assert_equal 'example.com.', dsl.zones.first.name
+    assert_equal 'www.example.com.', dsl.zones.first.records.first.name
+  end
 end
 

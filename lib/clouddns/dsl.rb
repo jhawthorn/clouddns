@@ -41,6 +41,8 @@ module Clouddns
     end
 
     def add_record type, name, value, options={}
+      name = domainname(name)
+
       raise "records must be added inside a zone" unless @zone
       raise "record's dns name must end with the current zone" unless name.end_with? @zone.name
 
@@ -50,7 +52,7 @@ module Clouddns
     def zone name
       raise "zones cannot be nested" if @zone
 
-      @zone = Zone.new(name)
+      @zone = Zone.new(domainname(name))
       @zones << @zone
       yield
       @zone = nil
@@ -70,6 +72,15 @@ module Clouddns
 
     def provider name, options={}
       @fog_options = options.merge({:provider => name})
+    end
+
+    private
+    def domainname name
+      if name.end_with? '.'
+        name
+      else
+        "#{name}."
+      end
     end
   end
 end

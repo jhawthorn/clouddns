@@ -53,12 +53,14 @@ Zone
 ----
 
 Defines a zone. Takes one argument, the fully qualified domain name, and a block, which declares the records associated with the zone.
+Domain names can end with a dot, if missing, is is implied.
 
 Records
 -------
 
 Records must be defined within a zone.
 They are defined by calling the helper method for their type (A, CNAME, etc) with their FQDN, value, and any options.
+If the domain name is missing the trailing dot, it is implied.
 
 Value can be an array to specify multiple entries for that record (like in the case of Round-robin DNS, or multiple MX records).
 
