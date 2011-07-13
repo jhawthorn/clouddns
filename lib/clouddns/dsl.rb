@@ -24,24 +24,17 @@ module Clouddns
 
     protected
 
-    def A *args
-      add_record 'A', *args
-    end
-    def CNAME *args
-      add_record 'CNAME', *args
-    end
-    def MX *args
-      add_record 'MX', *args
-    end
-    def NS *args
-      add_record 'NS', *args
-    end
-    def TXT name, value, options={}
-      add_record 'TXT', name, "\"#{value}\"", options
+    record_types = %w{A AAAA CNAME MX NS PTR SOA SPF SRV TXT}
+    record_types.each do |type|
+      define_method type do |*args|
+        add_record type, *args
+      end
     end
 
     def add_record type, name, value, options={}
       name = domainname(name)
+
+      value = "\"#{value}\"" if type == 'TXT'
 
       raise "records must be added inside a zone" unless @zone
       raise "record's dns name must end with the current zone" unless name.end_with? @zone.name
@@ -84,3 +77,4 @@ module Clouddns
     end
   end
 end
+
