@@ -51,15 +51,15 @@ module Clouddns
       end
 
       def print_changes
-        namelength = @migration.changes.map do |(action, record)|
-          record.name.length
+        namelength = @migration.changes.map do |change|
+          change.record.name.length
         end.max
 
         puts
         puts "Changes:"
 
-        @migration.changes.each do |(action, record)|
-          puts Utils::format_record record, :namelength => namelength, :prefix => action
+        @migration.changes.each do |change|
+          puts change.to_s(namelength)
         end
       end
 
