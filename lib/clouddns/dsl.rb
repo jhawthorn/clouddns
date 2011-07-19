@@ -3,9 +3,6 @@ module Clouddns
     attr_reader :zones
     attr_reader :fog_options
 
-    # This need not be too strict. Only exists to help catch typos.
-    DNS_REGEX = /\A.*\..*\.\z/
-
     def initialize
       @zones = []
       @zone = nil
@@ -32,7 +29,7 @@ module Clouddns
     end
 
     def add_record type, name, value, options={}
-      name = domainname(name)
+      name = Utils::parse_domain(name)
 
       value = "\"#{value}\"" if type == 'TXT'
 
@@ -45,7 +42,7 @@ module Clouddns
     def zone name
       raise "zones cannot be nested" if @zone
 
-      @zone = Zone.new(domainname(name))
+      @zone = Zone.new(Utils::parse_domain(name))
       @zones << @zone
       yield
       @zone = nil
@@ -65,15 +62,6 @@ module Clouddns
 
     def provider name, options={}
       @fog_options = options.merge({:provider => name})
-    end
-
-    private
-    def domainname name
-      if name.end_with? '.'
-        name
-      else
-        "#{name}."
-      end
     end
   end
 end
