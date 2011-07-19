@@ -3,6 +3,8 @@ module Clouddns
   module Actions
     class Migrate < GenericAction
       def run
+        require 'fog'
+
         @fog = Fog::DNS.new(@options[:fog])
         @fog_zone = @fog.zones.find { |z| z.domain == @zone.name }
 

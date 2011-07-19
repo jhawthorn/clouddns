@@ -53,9 +53,8 @@ module Clouddns
       # AWS replaces * with \052
       record.name == fog_record_name(fog_record) &&
         record.type == fog_record.type &&
-        record.value == fog_record.ip &&
+        record.value == fog_record.value &&
         record.ttl.to_i == fog_record.ttl.to_i
     end
-
   end
 end

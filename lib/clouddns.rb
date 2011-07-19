@@ -1,5 +1,3 @@
-require "fog"
-
 require "clouddns/actions"
 require "clouddns/dsl"
 require "clouddns/record"

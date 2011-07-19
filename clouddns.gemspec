@@ -14,4 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "clouddns"
   gem.require_paths = ['lib']
   gem.version       = Clouddns::VERSION
+
+  # 0.9.0 changed Record#ip to Record#value
+  gem.add_dependency('fog', '>= 0.9.0')
 end

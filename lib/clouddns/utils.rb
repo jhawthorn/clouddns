@@ -16,8 +16,7 @@ module Clouddns
 
       output = []
 
-      values = record.respond_to?(:value) ? record.value : record.ip
-      values.each_with_index do |value, i|
+      record.value.each_with_index do |value, i|
         if i.zero?
           args = [prefix, record.type, record.ttl, record.name, value]
         else
