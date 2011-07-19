@@ -1,10 +1,7 @@
-require 'clouddns/actions/print_record'
 
 module Clouddns
   module Actions
     class Migrate < GenericAction
-      include PrintRecord
-
       def run
         @fog = Fog::DNS.new(@options[:fog])
         @fog_zone = @fog.zones.find { |z| z.domain == @zone.name }
@@ -60,7 +57,7 @@ module Clouddns
         puts "Changes:"
 
         @migration.changes.each do |(action, record)|
-          print_record record, namelength, action
+          puts Utils::format_record record, :namelength => namelength, :prefix => action
         end
       end
 

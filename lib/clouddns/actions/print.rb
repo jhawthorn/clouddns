@@ -1,10 +1,7 @@
-require 'clouddns/actions/print_record'
 
 module Clouddns
   module Actions
     class Print < GenericAction
-      include PrintRecord
-
       def run
         print_all
       end
@@ -14,7 +11,7 @@ module Clouddns
         puts "Zone '#{@zone.name}'"
         namelength = @zone.records.map{ |x| x.name.length }.max
         @zone.records.each do |record|
-          print_record record, namelength
+          puts Utils::format_record record, :namelength => namelength
         end
       end
     end
