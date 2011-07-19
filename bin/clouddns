@@ -9,10 +9,13 @@ options = {
   :force => false
 }
 
-OptionParser.new do |opts|
-  opts.banner = "Usage: #{$0} [OPTIONS] [ACTION] FILES"
+option_parser = OptionParser.new do |opts|
+  opts.banner = [
+    "Usage: #{$0} [OPTIONS] print FILES",
+    "       #{$0} [OPTIONS] migrate FILES"
+  ].join("\n")
 
-  opts.on('-p', '--provider provider', "Override DNS provider (AWS, Zerigo, etc)") do |provider|
+  opts.on('-p', '--provider provider', "Override DNS provider (AWS, bluebox, dnsimple, dnsmadeeasy, linode, slicehost, zerigo)") do |provider|
     options[:fog][:provider] = provider
   end
 
@@ -29,13 +32,26 @@ OptionParser.new do |opts|
     puts opts
     exit
   end
-end.parse!
+end
+
+option_parser.parse!
 
 action = ARGV.slice!(0)
 files = ARGV
 
-raise "No action specified" unless action
-raise "No files specified" if files.empty?
+if !action
+  error = "No action specified"
+elsif files.empty?
+  error = "No files specified"
+else
+  error = nil
+end
+
+if error
+  puts error
+  puts option_parser
+  exit 1
+end
 
 action = Clouddns::Actions.by_name(action)
 
