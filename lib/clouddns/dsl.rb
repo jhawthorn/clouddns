@@ -30,6 +30,7 @@ module Clouddns
 
     def add_record type, name, value, options={}
       name = Utils::parse_domain(name)
+      options = @defaults.merge(options)
 
       value = "\"#{value}\"" if type == 'TXT'
 
