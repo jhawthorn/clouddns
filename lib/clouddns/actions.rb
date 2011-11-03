@@ -2,6 +2,7 @@
 require 'clouddns/actions/generic_action'
 require 'clouddns/actions/print'
 require 'clouddns/actions/migrate'
+require 'clouddns/actions/zonefile'
 
 module Clouddns
   module Actions
@@ -9,6 +10,7 @@ module Clouddns
       case name.downcase
       when 'print' then Print
       when 'migrate' then Migrate
+      when 'zonefile' then Zonefile
       else
         raise "Unknown action: #{name}"
       end
