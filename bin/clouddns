@@ -3,70 +3,7 @@
 require 'rubygems'
 require 'optparse'
 require 'clouddns'
+require 'clouddns/cli'
 
-options = {
-  :fog => {},
-  :force => false
-}
-
-option_parser = OptionParser.new do |opts|
-  opts.banner = [
-    "Usage: #{$0} [OPTIONS] print    FILES  # Pretty print contents of FILES",
-    "       #{$0} [OPTIONS] migrate  FILES  # Update DNS servers",
-    "       #{$0} [OPTIONS] zonefile FILES  # Print FILES as zone files",
-    "",
-    ""
-  ].join("\n")
-
-  opts.on('-p', '--provider provider', "Override DNS provider (AWS, bluebox, dnsimple, dnsmadeeasy, linode, slicehost, zerigo)") do |provider|
-    options[:fog][:provider] = provider
-  end
-
-  opts.on('-f', '--force', 'Assume yes to all questions') do
-    options[:force] = true
-  end
-
-  opts.on('-v', '--version') do
-    puts "clouddns v#{Clouddns::VERSION}"
-    exit(0)
-  end
-
-  opts.on_tail("-h", "--help", "Show this message") do
-    puts opts
-    exit
-  end
-end
-
-option_parser.parse!
-
-action = ARGV.slice!(0)
-files = ARGV
-
-if !action
-  error = "No action specified"
-elsif files.empty?
-  error = "No files specified"
-else
-  error = nil
-end
-
-if error
-  puts error
-  puts option_parser
-  exit 1
-end
-
-action = Clouddns::Actions.by_name(action)
-
-zones = files.map do |file|
-  dsl = Clouddns::DSL.parse_file(file)
-
-  dsloptions = {:fog => dsl.fog_options}.merge(options) do |key, oldval, newval|
-    oldval.merge(newval)
-  end
-
-  dsl.zones.each do |zone|
-    action.run(zone, dsloptions)
-  end
-end
+Clouddns::CLI.start
 
