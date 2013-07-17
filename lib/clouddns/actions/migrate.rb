@@ -11,10 +11,12 @@ module Clouddns
         puts
         puts "Migrating '#{@zone.name}'"
 
-        create_zone! unless @fog_zone
+        unless @fog_zone
+          @fog_zone = create_zone!
+        end
 
         # required to pick up nameservers and records
-        @fog_zone = @fog_zone.reload
+        @fog_zone.reload
 
         print_nameservers
 
@@ -38,7 +40,7 @@ module Clouddns
         puts
         puts "Zone '#{@zone.name}' does not exist. Creating..."
         require_confirmation!
-        @fog_zone = @fog.zones.create(:domain => @zone.name)
+        fog_zone = @fog.zones.create(:domain => @zone.name)
         puts "Zone '#{@zone.name}' created."
       end
 
@@ -64,11 +66,7 @@ module Clouddns
       end
 
       def require_confirmation!
-        print "Type 'Yes' to continute: "
-        STDOUT.flush
-
-        unless STDIN.readline.strip == 'Yes'
-          puts "aborting"
+        unless yes?('continue?')
           exit 1
         end
       end
