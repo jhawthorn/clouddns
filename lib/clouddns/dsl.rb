@@ -32,7 +32,9 @@ module Clouddns
       name = Utils::parse_domain(name)
       options = @defaults.merge(options)
 
-      value = "\"#{value}\"" if type == 'TXT'
+      if type == 'TXT'
+        value = Array(value).map{|v| "\"#{v}\""}
+      end
 
       raise "records must be added inside a zone" unless @zone
       raise "record's dns name must end with the current zone" unless name.end_with? @zone.name
