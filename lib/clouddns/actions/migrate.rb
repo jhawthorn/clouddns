@@ -66,7 +66,7 @@ module Clouddns
       end
 
       def require_confirmation!
-        unless yes?('Continue?')
+        unless @options[:force] || yes?('Continue?')
           exit 1
         end
       end
