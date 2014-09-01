@@ -18,4 +18,5 @@ Gem::Specification.new do |gem|
   # 0.9.0 changed Record#ip to Record#value
   gem.add_dependency('fog', '>= 0.9.0')
   gem.add_dependency('thor', '~> 0.18.1')
+  gem.add_development_dependency('rake')
 end
