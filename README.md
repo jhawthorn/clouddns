@@ -1,6 +1,8 @@
 clouddns
 ========
 
+[![Build Status](https://travis-ci.org/jhawthorn/clouddns.svg?branch=master)](https://travis-ci.org/jhawthorn/clouddns)
+
 A DSL for managing your DNS on cloud services through [fog](http://fog.io/).
 
 Clouddns allows a convenient way to manage DNS on Amazon Route 53, bluebox, DNSimple, DNS Made Easy, Linode DNS, Slicehost DNS or Zerigo DNS.
